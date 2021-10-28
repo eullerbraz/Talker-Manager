@@ -5,6 +5,7 @@ const {
     getAllTalkers,
     getTalkerById,
     createTalker,
+    editTalker,
   },
 } = require('../middlewares');
 
@@ -15,5 +16,7 @@ router.get('/', getAllTalkers);
 router.get('/:id', getTalkerById);
 
 router.post('/', createTalker);
+
+router.put('/:id', editTalker);
 
 module.exports = router;

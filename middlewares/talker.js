@@ -65,11 +65,11 @@ const checkWatchedAt = (watchedAt) => {
 };
 
 const checkRate = (rate) => {
-  if (!rate) {
+  if (typeof rate !== 'number') {
     return 'O campo "talk" é obrigatório e "watchedAt" e "rate" não podem ser vazios';
   }
 
-  if (typeof rate !== 'number' || (rate < 1 || rate > 5)) {
+  if (rate < 1 || rate > 5) {
     return 'O campo "rate" deve ser um inteiro de 1 à 5';
   }
 
@@ -158,8 +158,30 @@ const createTalker = async (req, res, next) => {
   res.status(HTTP_ADD_STATUS).json(talker);
 };
 
+const editTalker = async (req, res, next) => {
+  const { id } = req.params;
+  const { authorization } = req.headers; 
+  const { name, age, talk } = req.body;
+  const { isValid, errorObj } = validatePost(authorization, name, age, talk);
+
+  if (!isValid) return next(errorObj);
+
+  const talkers = JSON.parse(await fs.readFile(FILE_PATH));
+  const talker = talkers.find(({ id: talkerId }) => Number(id) === talkerId);
+  const editedTalkers = talkers.filter(({ talkerId }) => Number(id) !== talkerId);
+  talker.name = name;
+  talker.age = age;
+  talker.talk = talk;
+  editedTalkers.push(talker);
+
+  await fs.writeFile(FILE_PATH, JSON.stringify(talkers));
+
+  res.status(HTTP_OK_STATUS).json(talker);
+};
+
 module.exports = {
   getAllTalkers,
   getTalkerById,
   createTalker,
+  editTalker,
 };
