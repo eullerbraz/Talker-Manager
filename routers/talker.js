@@ -6,6 +6,7 @@ const {
     getTalkerById,
     createTalker,
     editTalker,
+    deleteTalker,
   },
 } = require('../middlewares');
 
@@ -18,5 +19,7 @@ router.get('/:id', getTalkerById);
 router.post('/', createTalker);
 
 router.put('/:id', editTalker);
+
+router.delete('/:id', deleteTalker);
 
 module.exports = router;

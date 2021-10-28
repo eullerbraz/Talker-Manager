@@ -168,15 +168,35 @@ const editTalker = async (req, res, next) => {
 
   const talkers = JSON.parse(await fs.readFile(FILE_PATH));
   const talker = talkers.find(({ id: talkerId }) => Number(id) === talkerId);
-  const editedTalkers = talkers.filter(({ talkerId }) => Number(id) !== talkerId);
+  const editedTalkers = talkers.filter(({ id: talkerId }) => Number(id) !== talkerId);
   talker.name = name;
   talker.age = age;
   talker.talk = talk;
   editedTalkers.push(talker);
 
-  await fs.writeFile(FILE_PATH, JSON.stringify(talkers));
+  await fs.writeFile(FILE_PATH, JSON.stringify(editedTalkers));
 
   res.status(HTTP_OK_STATUS).json(talker);
+};
+
+const deleteTalker = async (req, res, next) => {
+  const { id } = req.params;
+  const { authorization } = req.headers;
+  const tokenTest = checkToken(authorization);
+
+  if (tokenTest) {
+    return next({
+      message: tokenTest,
+      status: HTTP_AUTHORIZATION_FAIL_STATUS,
+    });
+  }
+
+  const talkers = JSON.parse(await fs.readFile(FILE_PATH));
+  const filteredTalkers = talkers.filter(({ id: talkerId }) => Number(id) !== talkerId);
+
+  await fs.writeFile(FILE_PATH, JSON.stringify(filteredTalkers));
+
+  res.status(HTTP_OK_STATUS).json({ message: 'Pessoa palestrante deletada com sucesso' });
 };
 
 module.exports = {
@@ -184,4 +204,5 @@ module.exports = {
   getTalkerById,
   createTalker,
   editTalker,
+  deleteTalker,
 };
