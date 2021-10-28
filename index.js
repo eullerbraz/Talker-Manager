@@ -1,7 +1,8 @@
 const express = require('express');
 
-const { error } = require('./middlewares');
 const { talker } = require('./routers');
+const { login } = require('./routers');
+const { error } = require('./middlewares');
 
 const app = express();
 app.use(express.json());
@@ -15,6 +16,8 @@ app.get('/', (_request, response) => {
 });
 
 app.use('/talker', talker);
+
+app.use('/login', login);
 
 app.use(error);
 
