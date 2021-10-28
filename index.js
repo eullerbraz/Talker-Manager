@@ -1,5 +1,6 @@
 const express = require('express');
 
+const { error } = require('./middlewares');
 const { talker } = require('./routers');
 
 const app = express();
@@ -14,6 +15,8 @@ app.get('/', (_request, response) => {
 });
 
 app.use('/talker', talker);
+
+app.use(error);
 
 app.listen(PORT, () => {
   console.log('Online');

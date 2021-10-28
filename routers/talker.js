@@ -1,9 +1,16 @@
 const express = require('express');
 
-const { getTalkers } = require('../middlewares/talker');
+const {
+  talker: {
+    getAllTalkers,
+    getTalkerById,
+  },
+} = require('../middlewares');
 
 const router = express.Router();
 
-router.get('/', getTalkers);
+router.get('/', getAllTalkers);
+
+router.get('/:id', getTalkerById);
 
 module.exports = router;
