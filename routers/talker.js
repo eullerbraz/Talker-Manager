@@ -7,12 +7,15 @@ const {
     createTalker,
     editTalker,
     deleteTalker,
+    searchTalker,
   },
 } = require('../middlewares');
 
 const router = express.Router();
 
 router.get('/', getAllTalkers);
+
+router.get('/search', searchTalker);
 
 router.get('/:id', getTalkerById);
 

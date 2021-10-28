@@ -199,10 +199,31 @@ const deleteTalker = async (req, res, next) => {
   res.status(HTTP_OK_STATUS).json({ message: 'Pessoa palestrante deletada com sucesso' });
 };
 
+const searchTalker = async (req, res, next) => {
+  const { q } = req.query;
+  const { authorization } = req.headers;
+  const tokenTest = checkToken(authorization);
+
+  if (tokenTest) {
+    return next({
+      message: tokenTest,
+      status: HTTP_AUTHORIZATION_FAIL_STATUS,
+    });
+  }
+
+  const talkers = JSON.parse(await fs.readFile(FILE_PATH));
+  const filteredTalkers = talkers.filter(({ name }) => name.includes(q));
+
+  await fs.writeFile(FILE_PATH, JSON.stringify(filteredTalkers));
+
+  res.status(HTTP_OK_STATUS).json(filteredTalkers);
+};
+
 module.exports = {
   getAllTalkers,
   getTalkerById,
   createTalker,
   editTalker,
   deleteTalker,
+  searchTalker,
 };
